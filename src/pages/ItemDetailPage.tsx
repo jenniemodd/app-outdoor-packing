@@ -11,6 +11,7 @@ const ItemDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [item, setItem] = useState<Item | null>(null) // null = ingen pryl än
+  const [deleteError, setDeleteError] = useState('')
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -34,6 +35,7 @@ const ItemDetailPage = () => {
       }
     }
 
+   
     fetchItem()
   }, [id]) // hämta igen om id:t i adressen ändras
 
@@ -47,6 +49,31 @@ const ItemDetailPage = () => {
       </>
     )
   }
+
+   const deleteItem = async () => {
+  if (!item) return
+
+  // confirm visar en ruta med OK och Avbryt. Avbryt ger false
+  const isSure = window.confirm(`Vill du ta bort ${item.title}?`)
+  if (!isSure) return
+
+  setDeleteError('')
+  try {
+    const response = await fetch(`${API_URL}/${item.id}`, {
+      method: 'DELETE', // samma adress som GET, men en annan metod
+    })
+    const data = await response.json()
+
+    if (!response.ok) {
+      setDeleteError(data.message)
+      return
+    }
+
+    navigate('/') // klart, tillbaka till listan
+  } catch (error) {
+    setDeleteError(error instanceof Error ? error.message : 'Okänt fel')
+  }
+}
 
   return (
     <article>
@@ -76,6 +103,8 @@ const ItemDetailPage = () => {
       <section>
         <Link to={`/items/${item.id}/edit`}>Ändra</Link>
         <button type="button" onClick={() => navigate(-1)}>Tillbaka</button>
+  <button type="button" onClick={deleteItem}>Ta bort</button>
+   {deleteError && <p>Kunde inte ta bort prylen: {deleteError}</p>}
       </section>
     </article>
   )
