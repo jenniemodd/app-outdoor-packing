@@ -17,3 +17,13 @@ export type Item = {
   createdAt: string // när prylen skapades, sätts av servern
   updatedAt: string // senast ändrad, sätts av servern
 }
+
+// Det formuläret skickar till API:t när en pryl skapas eller ändras
+export type NewItem = {
+  title: string
+  subtitle: string
+  category: string
+  status: string
+  tags: string[]
+  notes: string
+}
