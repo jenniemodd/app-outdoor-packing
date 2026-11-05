@@ -1,44 +1,41 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { API_URL } from '../config'
-import type { Item } from '../types'
+import useItem from '../hooks/useItem'
 
 const ItemDetailPage = () => {
-  // Läser :id ur adressen. Är adressen /items/6aeb... blir id "6aeb..."
+  // 1. Hooks högst upp
   const { id } = useParams()
   const navigate = useNavigate()
-
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [item, setItem] = useState<Item | null>(null) // null = ingen pryl än
+  const { item, isLoading, error } = useItem(id) // all hämtning sker i hooken
   const [deleteError, setDeleteError] = useState('')
 
-  useEffect(() => {
-    const fetchItem = async () => {
-      setIsLoading(true)
-      setError('')
-      try {
-        const response = await fetch(`${API_URL}/${id}`)
-        const data = await response.json()
+  // 2. Funktioner
+  const deleteItem = async () => {
+    if (!item) return
 
-        if (!response.ok) {
-          // 404 betyder att det inte finns någon pryl med det id:t
-          setError(response.status === 404 ? 'Prylen hittades inte' : data.message)
-          return // viktigt: annars sparas felsvaret som om det vore en pryl
-        }
+    const isSure = window.confirm(`Vill du ta bort ${item.title}?`)
+    if (!isSure) return
 
-        setItem(data)
-      } catch (error) {
-        setError(error instanceof Error ? error.message : 'Okänt fel')
-      } finally {
-        setIsLoading(false)
+    setDeleteError('')
+    try {
+      const response = await fetch(`${API_URL}/${item.id}`, {
+        method: 'DELETE',
+      })
+      const data = await response.json()
+
+      if (!response.ok) {
+        setDeleteError(data.message)
+        return
       }
+
+      navigate('/')
+    } catch (error) {
+      setDeleteError(error instanceof Error ? error.message : 'Okänt fel')
     }
+  }
 
-   
-    fetchItem()
-  }, [id]) // hämta igen om id:t i adressen ändras
-
+  // 3. Tidiga return
   if (isLoading) return <p>Laddar pryl...</p>
 
   if (error || !item) {
@@ -50,31 +47,7 @@ const ItemDetailPage = () => {
     )
   }
 
-   const deleteItem = async () => {
-  if (!item) return
-
-  // confirm visar en ruta med OK och Avbryt. Avbryt ger false
-  const isSure = window.confirm(`Vill du ta bort ${item.title}?`)
-  if (!isSure) return
-
-  setDeleteError('')
-  try {
-    const response = await fetch(`${API_URL}/${item.id}`, {
-      method: 'DELETE', // samma adress som GET, men en annan metod
-    })
-    const data = await response.json()
-
-    if (!response.ok) {
-      setDeleteError(data.message)
-      return
-    }
-
-    navigate('/') // klart, tillbaka till listan
-  } catch (error) {
-    setDeleteError(error instanceof Error ? error.message : 'Okänt fel')
-  }
-}
-
+  // 4. Själva sidan
   return (
     <article>
       {item.imageUrl && <img src={item.imageUrl} alt={item.title} />}
@@ -87,7 +60,6 @@ const ItemDetailPage = () => {
         <span>{item.status}</span>
       </p>
 
-      {/* Taggarna är en lista, så vi gör en <span> per tagg */}
       {item.tags.length > 0 && (
         <p>
           {item.tags.map((tag) => (
@@ -103,9 +75,10 @@ const ItemDetailPage = () => {
       <section>
         <Link to={`/items/${item.id}/edit`}>Ändra</Link>
         <button type="button" onClick={() => navigate(-1)}>Tillbaka</button>
-  <button type="button" onClick={deleteItem}>Ta bort</button>
-   {deleteError && <p>Kunde inte ta bort prylen: {deleteError}</p>}
+        <button type="button" onClick={deleteItem}>Ta bort</button>
       </section>
+
+      {deleteError && <p>Kunde inte ta bort prylen: {deleteError}</p>}
     </article>
   )
 }
