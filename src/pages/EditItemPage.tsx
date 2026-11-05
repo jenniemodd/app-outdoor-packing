@@ -1,39 +1,26 @@
-import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
-import { API_URL } from '../config'
 import type { NewItem } from '../types'
 import useItem from '../hooks/useItem'
+import useItemActions from '../hooks/useItemActions'
 import ItemForm from '../components/ItemForm'
 
 const EditItemPage = () => {
-  // 1. Hooks högst upp. Samma hook som på detaljsidan
+  // 1. Hooks
   const { id } = useParams()
   const navigate = useNavigate()
   const { item, isLoading, error } = useItem(id)
-  const [saveError, setSaveError] = useState('')
+  // Båda hooks lämnar tillbaka något som heter "error", så vi döper om det ena
+  const { updateItem, error: saveError } = useItemActions()
 
   // 2. Funktioner
   const editItem = async (changes: NewItem) => {
-    setSaveError('')
-    try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(changes),
-      })
-      const data = await response.json()
+    if (!id) return false
 
-      if (!response.ok) {
-        setSaveError(data.message)
-        return false
-      }
+    const updated = await updateItem(id, changes)
+    if (!updated) return false
 
-      navigate(`/items/${data.id}`)
-      return true
-    } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Okänt fel')
-      return false
-    }
+    navigate(`/items/${updated.id}`)
+    return true
   }
 
   // 3. Tidiga return

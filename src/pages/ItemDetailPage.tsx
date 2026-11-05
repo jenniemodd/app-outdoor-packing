@@ -1,38 +1,23 @@
-import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
-import { API_URL } from '../config'
 import useItem from '../hooks/useItem'
+import useItemActions from '../hooks/useItemActions'
 
 const ItemDetailPage = () => {
-  // 1. Hooks högst upp
+  // 1. Hooks
   const { id } = useParams()
   const navigate = useNavigate()
-  const { item, isLoading, error } = useItem(id) // all hämtning sker i hooken
-  const [deleteError, setDeleteError] = useState('')
+  const { item, isLoading, error } = useItem(id)
+  const { deleteItem, isSaving, error: deleteError } = useItemActions()
 
   // 2. Funktioner
-  const deleteItem = async () => {
+  const handleDelete = async () => {
     if (!item) return
 
     const isSure = window.confirm(`Vill du ta bort ${item.title}?`)
     if (!isSure) return
 
-    setDeleteError('')
-    try {
-      const response = await fetch(`${API_URL}/${item.id}`, {
-        method: 'DELETE',
-      })
-      const data = await response.json()
-
-      if (!response.ok) {
-        setDeleteError(data.message)
-        return
-      }
-
-      navigate('/')
-    } catch (error) {
-      setDeleteError(error instanceof Error ? error.message : 'Okänt fel')
-    }
+    const success = await deleteItem(item.id)
+    if (success) navigate('/')
   }
 
   // 3. Tidiga return
@@ -75,7 +60,10 @@ const ItemDetailPage = () => {
       <section>
         <Link to={`/items/${item.id}/edit`}>Ändra</Link>
         <button type="button" onClick={() => navigate(-1)}>Tillbaka</button>
-        <button type="button" onClick={deleteItem}>Ta bort</button>
+        {/* disabled medan borttagningen pågår, så man inte klickar två gånger */}
+        <button type="button" onClick={handleDelete} disabled={isSaving}>
+          {isSaving ? 'Tar bort...' : 'Ta bort'}
+        </button>
       </section>
 
       {deleteError && <p>Kunde inte ta bort prylen: {deleteError}</p>}

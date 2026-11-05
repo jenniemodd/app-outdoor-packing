@@ -1,35 +1,19 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { API_URL } from '../config'
 import type { NewItem } from '../types'
+import useItemActions from '../hooks/useItemActions'
 import ItemForm from '../components/ItemForm'
 
 const NewItemPage = () => {
   const navigate = useNavigate()
-  const [error, setError] = useState('')
+  const { createItem, error } = useItemActions()
 
-  // Den här funktionen skickas ner till formuläret som onSave
+  // Sidan bestämmer bara vad som händer EFTER att det sparats
   const addItem = async (newItem: NewItem) => {
-    setError('')
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }, // "det jag skickar är JSON"
-        body: JSON.stringify(newItem), // gör om objektet till JSON-text
-      })
-      const data = await response.json()
+    const created = await createItem(newItem)
+    if (!created) return false // felet visas via error
 
-      if (!response.ok) {
-        setError(data.message)
-        return false
-      }
-
-      navigate(`/items/${data.id}`) // till den nya prylens sida
-      return true
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Okänt fel')
-      return false
-    }
+    navigate(`/items/${created.id}`)
+    return true
   }
 
   return (
