@@ -8,9 +8,11 @@ const useItems = (status: string) => {
   const [error, setError] = useState('')
   const [updateError, setUpdateError] = useState('')
   const [items, setItems] = useState<Item[]>([])
+  
 
   // NYTT: ett räkneverk. Varje gång talet ändras hämtas listan på nytt
   const [reloadKey, setReloadKey] = useState(0)
+  
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -37,17 +39,19 @@ const useItems = (status: string) => {
       }
     }
 
+
+
     fetchItems()
   }, [status, reloadKey]) // NYTT: hämta om när status ELLER reloadKey ändras
 
-  // NYTT: ändra status på en pryl, och hämta sedan om listan
+    // ändra status på en pryl, och hämta sedan om listan
   const updateStatus = async (id: string, newStatus: string) => {
     setUpdateError('')
     try {
       const response = await fetch(`${API_URL}/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus }), // skicka bara det som ändras
+        body: JSON.stringify({ status: newStatus }),
       })
       const data = await response.json()
 
@@ -56,13 +60,17 @@ const useItems = (status: string) => {
         return
       }
 
-      setReloadKey((key) => key + 1) // räkna upp, så körs useEffect igen
+      setReloadKey((key) => key + 1)
     } catch (error) {
       setUpdateError(error instanceof Error ? error.message : 'Okänt fel')
     }
   }
 
-  return { items, isLoading, error, updateError, updateStatus }
+  // NYTT: hämta om listan, t.ex. efter att en ny pryl lagts till
+  const reload = () => setReloadKey((key) => key + 1)
+
+  // NYTT: reload sist i paketet
+  return { items, isLoading, error, updateError, updateStatus, reload }
 }
 
 export default useItems

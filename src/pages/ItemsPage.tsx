@@ -1,23 +1,65 @@
 import { ACTIVITIES, DURATIONS, STATUSES } from '../config'
+import type { Item, NewItem } from '../types'
 import useLocalStorage from '../hooks/useLocalStorage'
+import useItems from '../hooks/useItems'
+import useItemActions from '../hooks/useItemActions'
 import FilterButtons from '../components/FilterButtons'
+import ItemForm from '../components/ItemForm'
 import ItemList from '../components/ItemList'
 
 const ItemsPage = () => {
-  // Som useState, men valen sparas och finns kvar efter omladdning
+  // 1. Hooks
   const [status, setStatus] = useLocalStorage('packlista-status', '')
   const [activity, setActivity] = useLocalStorage('packlista-activity', '')
   const [duration, setDuration] = useLocalStorage('packlista-duration', '')
 
+  // Hooken är lyft hit från ItemList, så sidan kan be om omhämtning
+  const { items, isLoading, error, updateError, updateStatus, reload } = useItems(status)
+  const { createItem, error: createError } = useItemActions()
+
+  // 2. Filtrera på taggar (flyttat hit från ItemList)
+  const filteredItems = items.filter((item) =>
+    (activity === '' || item.tags.includes(activity)) &&
+    (duration === '' || item.tags.includes(duration))
+  )
+
+  // 3. Funktioner
+  const addItem = async (newItem: NewItem) => {
+    const created = await createItem(newItem)
+    if (!created) return false
+
+    reload() // hämta listan på nytt så att den nya prylen syns
+    return true
+  }
+
+  const togglePacked = (item: Item) => {
+    updateStatus(item.id, item.status === 'Packad' ? 'Har' : 'Packad')
+  }
+
+  // 4. Själva sidan
   return (
     <>
       <h1>Packlistan</h1>
+
+      {/* details/summary är en inbyggd "fäll ut"-ruta i HTML, ingen state behövs */}
+      <details>
+        <summary>Lägg till pryl</summary>
+        {createError && <p>Kunde inte spara: {createError}</p>}
+        <ItemForm onSave={addItem} />
+      </details>
 
       <FilterButtons label="Aktivitet" options={ACTIVITIES} selected={activity} onChange={setActivity} />
       <FilterButtons label="Turlängd" options={DURATIONS} selected={duration} onChange={setDuration} />
       <FilterButtons label="Status" options={STATUSES} selected={status} onChange={setStatus} />
 
-      <ItemList status={status} activity={activity} duration={duration} />
+      {updateError && <p>Kunde inte spara: {updateError}</p>}
+
+      <ItemList
+        items={filteredItems}
+        isLoading={isLoading}
+        error={error}
+        onTogglePacked={togglePacked}
+      />
     </>
   )
 }

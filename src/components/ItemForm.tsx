@@ -35,9 +35,19 @@ const ItemForm = ({ onSave, initialItem = emptyItem, submitLabel = 'Lägg till p
     }
   }
 
-  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault() // stoppa webbläsaren från att ladda om sidan
-    await onSave({ title, subtitle, category, status, tags, notes })
+    const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const success = await onSave({ title, subtitle, category, status, tags, notes })
+
+    // Gick det bra: töm fälten så att nästa pryl kan läggas till direkt
+    if (success) {
+      setTitle(initialItem.title)
+      setSubtitle(initialItem.subtitle)
+      setCategory(initialItem.category)
+      setStatus(initialItem.status)
+      setTags(initialItem.tags)
+      setNotes(initialItem.notes)
+    }
   }
 
   return (
