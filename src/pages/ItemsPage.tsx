@@ -1,18 +1,18 @@
 import { useState } from 'react'
 import { STATUSES } from '../config'
-import StatusFilter from '../components/StatusFilter'
+import FilterButtons from '../components/FilterButtons'
 import ItemList from '../components/ItemList'
 
 const ItemsPage = () => {
-  // Sidan håller i valet. '' betyder Alla
   const [status, setStatus] = useState('')
 
   return (
     <>
       <h1>Alla prylar</h1>
 
-      <StatusFilter
-        statuses={STATUSES}
+      <FilterButtons
+        label="Status"
+        options={STATUSES}
         selected={status}
         onChange={setStatus}
       />
