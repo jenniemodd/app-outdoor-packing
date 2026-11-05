@@ -1,49 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { API_URL } from '../config'
-import type { Item, NewItem } from '../types'
+import type { NewItem } from '../types'
+import useItem from '../hooks/useItem'
 import ItemForm from '../components/ItemForm'
 
 const EditItemPage = () => {
+  // 1. Hooks högst upp. Samma hook som på detaljsidan
   const { id } = useParams()
   const navigate = useNavigate()
-
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
+  const { item, isLoading, error } = useItem(id)
   const [saveError, setSaveError] = useState('')
-  const [item, setItem] = useState<Item | null>(null)
 
-  // 1. Hämta prylen, samma som på detaljsidan
-  useEffect(() => {
-    const fetchItem = async () => {
-      setIsLoading(true)
-      setError('')
-      try {
-        const response = await fetch(`${API_URL}/${id}`)
-        const data = await response.json()
-
-        if (!response.ok) {
-          setError(response.status === 404 ? 'Prylen hittades inte' : data.message)
-          return
-        }
-
-        setItem(data)
-      } catch (error) {
-        setError(error instanceof Error ? error.message : 'Okänt fel')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchItem()
-  }, [id])
-
-  // 2. Spara ändringarna med PATCH
+  // 2. Funktioner
   const editItem = async (changes: NewItem) => {
     setSaveError('')
     try {
       const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PATCH', // ändra bara det som skickas
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(changes),
       })
@@ -54,7 +28,7 @@ const EditItemPage = () => {
         return false
       }
 
-      navigate(`/items/${data.id}`) // tillbaka till prylens sida
+      navigate(`/items/${data.id}`)
       return true
     } catch (error) {
       setSaveError(error instanceof Error ? error.message : 'Okänt fel')
@@ -62,6 +36,7 @@ const EditItemPage = () => {
     }
   }
 
+  // 3. Tidiga return
   if (isLoading) return <p>Laddar pryl...</p>
 
   if (error || !item) {
@@ -73,6 +48,7 @@ const EditItemPage = () => {
     )
   }
 
+  // 4. Själva sidan
   return (
     <>
       <h1>Ändra {item.title}</h1>
