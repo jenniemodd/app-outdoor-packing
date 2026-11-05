@@ -1,18 +1,26 @@
 import { Link } from 'react-router'
 import type { Item } from '../types'
 
-// Komponenten får en pryl via props
 type ItemCardProps = {
   item: Item
+  onTogglePacked: () => void // NYTT: anropas när kryssrutan klickas
 }
 
-const ItemCard = ({ item }: ItemCardProps) => {
+const ItemCard = ({ item, onTogglePacked }: ItemCardProps) => {
   return (
     <li>
-      {/* Titeln länkar till prylens egen sida, t.ex. /items/6b1f2a... */}
+      <label>
+        <input
+          type="checkbox"
+          checked={item.status === 'Packad'} // ikryssad om prylen är packad
+          disabled={item.status === 'Att skaffa'} // går inte att packa det du inte har
+          onChange={onTogglePacked}
+        />
+        Packad
+      </label>
+
       <Link to={`/items/${item.id}`}>{item.title}</Link>
 
-      {/* Visa bara undertiteln om den finns */}
       {item.subtitle && <p>{item.subtitle}</p>}
 
       <p>

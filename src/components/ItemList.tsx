@@ -8,26 +8,36 @@ type ItemListProps = {
 }
 
 const ItemList = ({ status, activity, duration }: ItemListProps) => {
-  // Steg 1: API:t filtrerar på status
-  const { items, isLoading, error } = useItems(status)
+  const { items, isLoading, error, updateError, updateStatus } = useItems(status)
 
-  // Steg 2: vi filtrerar själva på taggar, eftersom API:t inte kan det.
-  // En pryl är med om filtret är "Alla" ('') ELLER om prylen har taggen
   const filteredItems = items.filter((item) =>
     (activity === '' || item.tags.includes(activity)) &&
     (duration === '' || item.tags.includes(duration))
   )
 
-  if (isLoading) return <p>Laddar packlista...</p>
+  // NYTT: visa bara "Laddar" när det inte finns något att visa än.
+  // Annars blinkar hela listan varje gång du bockar i något
+  if (isLoading && items.length === 0) return <p>Laddar packlista...</p>
   if (error) return <p>Kunde inte hämta packlistan: {error}</p>
   if (filteredItems.length === 0) return <p>Inga prylar matchar filtret.</p>
 
   return (
-    <ul>
-      {filteredItems.map((item) => (
-        <ItemCard key={item.id} item={item} />
-      ))}
-    </ul>
+    <>
+      {updateError && <p>Kunde inte spara: {updateError}</p>}
+
+      <ul>
+        {filteredItems.map((item) => (
+          <ItemCard
+            key={item.id}
+            item={item}
+            // NYTT: packad blir Har, Har blir Packad
+            onTogglePacked={() =>
+              updateStatus(item.id, item.status === 'Packad' ? 'Har' : 'Packad')
+            }
+          />
+        ))}
+      </ul>
+    </>
   )
 }
 
