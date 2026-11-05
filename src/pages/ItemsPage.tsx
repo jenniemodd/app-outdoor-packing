@@ -1,23 +1,24 @@
 import { useState } from 'react'
-import { STATUSES } from '../config'
+import { ACTIVITIES, DURATIONS, STATUSES } from '../config'
 import FilterButtons from '../components/FilterButtons'
 import ItemList from '../components/ItemList'
 
 const ItemsPage = () => {
+  // Ett state per filter. '' betyder Alla
   const [status, setStatus] = useState('')
+  const [activity, setActivity] = useState('')
+  const [duration, setDuration] = useState('')
 
   return (
     <>
-      <h1>Alla prylar</h1>
+      <h1>Packlistan</h1>
 
-      <FilterButtons
-        label="Status"
-        options={STATUSES}
-        selected={status}
-        onChange={setStatus}
-      />
+      {/* Samma komponent tre gånger, med olika innehåll */}
+      <FilterButtons label="Aktivitet" options={ACTIVITIES} selected={activity} onChange={setActivity} />
+      <FilterButtons label="Turlängd" options={DURATIONS} selected={duration} onChange={setDuration} />
+      <FilterButtons label="Status" options={STATUSES} selected={status} onChange={setStatus} />
 
-      <ItemList status={status} />
+      <ItemList status={status} activity={activity} duration={duration} />
     </>
   )
 }
