@@ -1,0 +1,102 @@
+/*
+ * Designvariabler för Packlistan.
+ * ALLA färger, typsnitt och mått finns här. CSS-modulerna hämtar
+ * bara härifrån med var(--namn), så ändrar du här ändras hela appen.
+ */
+
+:root {
+  /* ---------- Färger ---------- */
+
+  /* Bakgrund och ytor */
+  --color-bg: #f4f1ea; /* papper, sidans bakgrund */
+  --color-surface: #fbfaf6; /* paneler, knappar, fält */
+  --color-surface-hover: #efebe1;
+
+  /* Text */
+  --color-text: #262b27; /* granit */
+  --color-text-muted: #5e655f; /* gråsten, undertitlar och etiketter */
+
+  /* Headern (mörk) */
+  --color-header: #262b27;
+  --color-header-text: #f4f1ea;
+  --color-header-text-muted: #c5cbc3;
+  --color-contour: #3a423c; /* höjdkurvorna */
+
+  /* Linjer */
+  --color-line: #d9d4c7; /* avdelare mellan rader */
+  --color-line-strong: #c9c3b3; /* ramar på knappar och fält */
+  --color-line-dashed: #a9a392; /* "Lägg till pryl" och sömmen på etiketter */
+  --color-track: #e2ddd0; /* bakgrund i progressbaren */
+
+  /* Primär: mossgrön */
+  --color-primary: #44603f;
+  --color-primary-dark: #2f4630; /* hover */
+  --color-primary-soft: #e1e8dc; /* ljus bakgrund, t.ex. "Packad" */
+  --color-on-primary: #ffffff; /* text på grön bakgrund */
+
+  /* Accent: signalorange, används sparsamt */
+  --color-accent: #c95a28; /* fokusring, aktiv menylänk */
+  --color-accent-soft: #f6e2d6; /* ljus bakgrund, "Att skaffa" */
+  --color-accent-text: #8f3d16; /* orange text som klarar kontrastkravet */
+
+  /* Fel och ta bort */
+  --color-danger: #a23b2e;
+
+  /* Inaktiverat */
+  --color-disabled-bg: #e2ddd0;
+  --color-disabled-text: #8a8f88;
+
+  /* ---------- Typsnitt ---------- */
+
+  --font-body: 'Barlow', system-ui, sans-serif;
+  --font-heading: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+
+  /* Storlekar i rem: 1rem = 16px om användaren inte ändrat sin textstorlek */
+  --text-xs: 0.8125rem; /* 13px – små etiketter */
+  --text-sm: 0.875rem; /* 14px – metadata, statusmarkering */
+  --text-base: 1rem; /* 16px – brödtext */
+  --text-md: 1.0625rem; /* 17px – prylnamn */
+  --text-lg: 1.25rem; /* 20px – kategorirubrik */
+  --text-xl: 2.5rem; /* 40px – sidrubrik */
+  --text-2xl: 3rem; /* 48px – rubrik på detaljsidan */
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Spärrning (avstånd mellan bokstäver) för text i versaler */
+  --tracking-label: 0.14em; /* AKTIVITET, STATUS */
+  --tracking-heading: 0.05em; /* KLÄDER, MAT */
+  --tracking-tag: 0.06em; /* HAR, PACKAD */
+
+  /* ---------- Avstånd ---------- */
+
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.5rem; /* 24px */
+  --space-6: 2rem; /* 32px */
+  --space-7: 3rem; /* 48px */
+
+  /* ---------- Former ---------- */
+
+  --radius-sm: 3px; /* statusmarkeringar */
+  --radius: 4px; /* knappar och fält */
+  --radius-lg: 6px; /* paneler */
+
+  --border: 1px solid var(--color-line);
+  --border-strong: 1px solid var(--color-line-strong);
+  --border-heading: 2px solid var(--color-text); /* under kategorirubriker */
+
+  /* ---------- Mått ---------- */
+
+  --tap-target: 44px; /* minsta storlek på det man trycker på i mobilen */
+  --content-width: 720px; /* max bredd på innehållet */
+
+  /* ---------- Fokus (tangentbord) ---------- */
+
+  --focus-ring: 3px solid var(--color-accent);
+  --focus-offset: 2px;
+}
