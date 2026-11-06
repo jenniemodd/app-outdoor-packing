@@ -1,4 +1,4 @@
-import { ACTIVITIES, DURATIONS, STATUSES } from '../config'
+import { DURATIONS, STATUSES, ACTIVITIES } from '../config'
 import type { Item, NewItem } from '../types'
 import useLocalStorage from '../hooks/useLocalStorage'
 import useItems from '../hooks/useItems'
@@ -13,11 +13,10 @@ const ItemsPage = () => {
   const [activity, setActivity] = useLocalStorage('packlista-activity', '')
   const [duration, setDuration] = useLocalStorage('packlista-duration', '')
 
-  // Hooken är lyft hit från ItemList, så sidan kan be om omhämtning
   const { items, isLoading, error, updateError, updateStatus, reload } = useItems(status)
   const { createItem, error: createError } = useItemActions()
 
-  // 2. Filtrera på taggar (flyttat hit från ItemList)
+  // 2. Filtrera på taggar
   const filteredItems = items.filter((item) =>
     (activity === '' || item.tags.includes(activity)) &&
     (duration === '' || item.tags.includes(duration))
@@ -28,12 +27,14 @@ const ItemsPage = () => {
     const created = await createItem(newItem)
     if (!created) return false
 
-    reload() // hämta listan på nytt så att den nya prylen syns
+    reload()
     return true
   }
 
-  const togglePacked = (item: Item) => {
-    updateStatus(item.id, item.status === 'Packad' ? 'Har' : 'Packad')
+  // NYTT: ersätter togglePacked. Skickar den status du valde
+  const changeStatus = (item: Item, newStatus: string) => {
+    if (newStatus === item.status) return // samma som förut: inget anrop behövs
+    updateStatus(item.id, newStatus)
   }
 
   // 4. Själva sidan
@@ -41,7 +42,6 @@ const ItemsPage = () => {
     <>
       <h1>Packlistan</h1>
 
-      {/* details/summary är en inbyggd "fäll ut"-ruta i HTML, ingen state behövs */}
       <details>
         <summary>Lägg till pryl</summary>
         {createError && <p>Kunde inte spara: {createError}</p>}
@@ -58,7 +58,7 @@ const ItemsPage = () => {
         items={filteredItems}
         isLoading={isLoading}
         error={error}
-        onTogglePacked={togglePacked}
+        onStatusChange={changeStatus}
       />
     </>
   )

@@ -1,15 +1,14 @@
 import type { Item } from '../types'
 import ItemCard from './ItemCard'
 
-// ItemList hämtar ingenting själv längre. Den visar bara det den får
 type ItemListProps = {
   items: Item[]
   isLoading: boolean
   error: string
-  onTogglePacked: (item: Item) => void
+  onStatusChange: (item: Item, status: string) => void // NYTT
 }
 
-const ItemList = ({ items, isLoading, error, onTogglePacked }: ItemListProps) => {
+const ItemList = ({ items, isLoading, error, onStatusChange }: ItemListProps) => {
   if (isLoading && items.length === 0) return <p>Laddar packlista...</p>
   if (error) return <p>Kunde inte hämta packlistan: {error}</p>
   if (items.length === 0) return <p>Inga prylar matchar filtret.</p>
@@ -20,7 +19,8 @@ const ItemList = ({ items, isLoading, error, onTogglePacked }: ItemListProps) =>
         <ItemCard
           key={item.id}
           item={item}
-          onTogglePacked={() => onTogglePacked(item)}
+          // Kortet vet bara vilken status du valde. Här lägger vi till VILKEN pryl det gäller
+          onStatusChange={(status) => onStatusChange(item, status)}
         />
       ))}
     </ul>
