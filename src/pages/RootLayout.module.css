@@ -1,0 +1,83 @@
+/* ---------- Header ---------- */
+
+.header {
+  position: relative; /* så att höjdkurvorna kan placeras inuti */
+  overflow: hidden; /* kurvorna får inte sticka ut */
+  background: var(--color-header);
+  color: var(--color-header-text);
+}
+
+/* Höjdkurvorna ligger bakom allt i headern och fyller hela ytan */
+.contours {
+  position: absolute;
+  inset: 0; /* samma som top: 0; right: 0; bottom: 0; left: 0 */
+  width: 100%;
+  height: 100%;
+}
+
+.contours path {
+  fill: none;
+  stroke: var(--color-contour);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke; /* linjen förblir 1px tunn även när svg:n sträcks ut */
+}
+
+/* Innehållet i headern: samma bredd som sidans innehåll */
+.headerInner {
+  position: relative; /* hamnar ovanpå kurvorna */
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4);
+  display: flex;
+  flex-wrap: wrap; /* på väldigt smala skärmar hamnar menyn under logotypen */
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+
+.logo {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-header-text);
+  text-decoration: none;
+}
+
+.logo:hover {
+  color: var(--color-header-text);
+}
+
+/* ---------- Menyn ---------- */
+
+.nav {
+  display: flex;
+  gap: var(--space-4);
+  font-weight: var(--weight-medium);
+}
+
+.navLink {
+  padding-bottom: 3px;
+  border-bottom: 2px solid transparent; /* osynlig linje, så texten inte hoppar när den blir aktiv */
+  color: var(--color-header-text-muted);
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: var(--color-header-text);
+}
+
+/* Länken till sidan du står på. NavLink sätter aria-current="page" automatiskt */
+.navLink[aria-current='page'] {
+  color: var(--color-header-text);
+  border-bottom-color: var(--color-accent);
+}
+
+/* ---------- Sidans innehåll ---------- */
+
+.main {
+  max-width: var(--content-width);
+  margin: 0 auto; /* auto på sidorna centrerar */
+  padding: var(--space-6) var(--space-4) var(--space-7);
+}
