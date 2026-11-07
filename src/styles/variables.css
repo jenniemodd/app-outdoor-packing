@@ -57,8 +57,10 @@
   --text-base: 1rem; /* 16px – brödtext */
   --text-md: 1.0625rem; /* 17px – prylnamn */
   --text-lg: 1.25rem; /* 20px – kategorirubrik */
-  --text-xl: 2.5rem; /* 40px – sidrubrik */
   --text-2xl: 3rem; /* 48px – rubrik på detaljsidan */
+--text-lg: 1.25rem; /* 20px – kategorirubrik */
+  --text-section: 1.75rem; /* 28px – sektionsrubriker, t.ex. "Packlista" */
+  --text-xl: 2.5rem; /* 40px – sidrubrik */
 
   --weight-regular: 400;
   --weight-medium: 500;

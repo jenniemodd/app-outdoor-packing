@@ -16,7 +16,6 @@ const emptyItem: NewItem = {
   category: '',
   status: 'Har',
   tags: [],
-  notes: '',
 }
 
 const ItemForm = ({ onSave, initialItem = emptyItem, submitLabel = 'Lägg till pryl' }: ItemFormProps) => {
@@ -25,7 +24,9 @@ const ItemForm = ({ onSave, initialItem = emptyItem, submitLabel = 'Lägg till p
   const [category, setCategory] = useState(initialItem.category)
   const [status, setStatus] = useState(initialItem.status)
   const [tags, setTags] = useState<string[]>(initialItem.tags)
-  const [notes, setNotes] = useState(initialItem.notes)
+
+  // Grundkategorierna + prylens egen kategori, om den har en som inte finns i listan
+  const categoryOptions = [...new Set([...CATEGORIES, initialItem.category])].filter((c) => c !== '')
 
   const toggleTag = (tag: string) => {
     if (tags.includes(tag)) {
@@ -37,7 +38,7 @@ const ItemForm = ({ onSave, initialItem = emptyItem, submitLabel = 'Lägg till p
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const success = await onSave({ title, subtitle, category, status, tags, notes })
+    const success = await onSave({ title, subtitle, category, status, tags })
 
     if (success) {
       setTitle(initialItem.title)
@@ -45,7 +46,6 @@ const ItemForm = ({ onSave, initialItem = emptyItem, submitLabel = 'Lägg till p
       setCategory(initialItem.category)
       setStatus(initialItem.status)
       setTags(initialItem.tags)
-      setNotes(initialItem.notes)
     }
   }
 
@@ -72,35 +72,25 @@ const ItemForm = ({ onSave, initialItem = emptyItem, submitLabel = 'Lägg till p
         </label>
       </div>
 
-      <div className={styles.row}>
-        <label className={styles.field}>
-          <span className={styles.label}>Kategori</span>
-          <input
-            className={styles.input}
-            list="categories"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-          <datalist id="categories">
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c} />
-            ))}
-          </datalist>
-        </label>
-
-        <label className={styles.field}>
-          <span className={styles.label}>Status</span>
-          <select
-            className={styles.input}
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            {STATUSES.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
-        </label>
-      </div>
+      {/* Kategori som radioknappar: bara en kan väljas, alla syns direkt, även i mobilen */}
+      <fieldset className={styles.fieldset}>
+        <legend className={styles.legend}>Kategori</legend>
+        <div className={styles.chips}>
+          {categoryOptions.map((c) => (
+            <label key={c} className={styles.chip}>
+              <input
+                type="radio"
+                name="category"
+                className={styles.chipInput}
+                value={c}
+                checked={category === c}
+                onChange={() => setCategory(c)}
+              />
+              {c}
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
       <fieldset className={styles.fieldset}>
         <legend className={styles.legend}>Aktiviteter</legend>
@@ -137,13 +127,16 @@ const ItemForm = ({ onSave, initialItem = emptyItem, submitLabel = 'Lägg till p
       </fieldset>
 
       <label className={styles.field}>
-        <span className={styles.label}>Anteckningar</span>
-        {/* Två klasser på samma element: .input för grundstilen, .textarea för det extra */}
-        <textarea
-          className={`${styles.input} ${styles.textarea}`}
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-        />
+        <span className={styles.label}>Status</span>
+        <select
+          className={styles.input}
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+        >
+          {STATUSES.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
       </label>
 
       <button type="submit" className={styles.submit}>{submitLabel}</button>

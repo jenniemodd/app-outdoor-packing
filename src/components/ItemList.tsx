@@ -13,7 +13,7 @@ type ItemListProps = {
 const ItemList = ({ items, isLoading, error, onStatusChange }: ItemListProps) => {
   if (isLoading && items.length === 0) return <p className={styles.message}>Laddar packlista...</p>
   if (error) return <p className={styles.message}>Kunde inte hämta packlistan: {error}</p>
-  if (items.length === 0) return <p className={styles.message}>Inga prylar matchar filtret.</p>
+  if (items.length === 0) return <p className={styles.message}>Ingen utrustning matchar filtret.</p>
 
   const groups = groupByCategory(items)
 

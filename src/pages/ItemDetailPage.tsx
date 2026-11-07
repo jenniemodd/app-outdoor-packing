@@ -1,7 +1,7 @@
 import { Link, useNavigate, useParams } from 'react-router'
 import useItem from '../hooks/useItem'
 import useItemActions from '../hooks/useItemActions'
-import { capitalize, formatDate } from '../utils/format'
+import { capitalize } from '../utils/format'
 import styles from './ItemDetailPage.module.css'
 
 const ItemDetailPage = () => {
@@ -34,15 +34,10 @@ const ItemDetailPage = () => {
     )
   }
 
-  // Sparas i en egen variabel, så att TypeScript vet att den inte är null längre ner
-  const rating = item.rating
-
   // 4. Själva sidan
   return (
     <article className={styles.page}>
       <Link to="/" className={styles.back}>Tillbaka till packlistan</Link>
-
-      {item.imageUrl && <img src={item.imageUrl} alt={item.title} className={styles.image} />}
 
       <header className={styles.header}>
         <div className={styles.meta}>
@@ -61,40 +56,6 @@ const ItemDetailPage = () => {
               <li key={tag} className={styles.tag}>{capitalize(tag)}</li>
             ))}
           </ul>
-        </section>
-      )}
-
-      {/* Visa bara rutorna om det finns ett betyg eller ett datum */}
-      {(rating !== null || item.date) && (
-        <dl className={styles.facts}>
-          {rating !== null && (
-            <div className={styles.fact}>
-              <dt className={styles.factLabel}>Betyg</dt>
-              <dd className={styles.factValue}>
-                {/* Prickarna är bara för ögat. Texten "4 av 5" läses av skärmläsare */}
-                <span className={styles.dots} aria-hidden="true">
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <span key={n} className={styles.dot} data-filled={n <= rating} />
-                  ))}
-                </span>
-                {rating} av 5
-              </dd>
-            </div>
-          )}
-
-          {item.date && (
-            <div className={styles.fact}>
-              <dt className={styles.factLabel}>Senast använd</dt>
-              <dd className={styles.factValue}>{formatDate(item.date)}</dd>
-            </div>
-          )}
-        </dl>
-      )}
-
-      {item.notes && (
-        <section className={styles.notes}>
-          <h2 className={styles.sectionTitle}>Anteckningar</h2>
-          <p className={styles.notesText}>{item.notes}</p>
         </section>
       )}
 

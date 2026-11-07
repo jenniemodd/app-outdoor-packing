@@ -19,11 +19,11 @@ export type Item = {
 }
 
 // Det formuläret skickar till API:t när en pryl skapas eller ändras
+// Det formuläret skickar till API:t när en pryl skapas eller ändras
 export type NewItem = {
   title: string
   subtitle: string
   category: string
   status: string
   tags: string[]
-  notes: string
 }

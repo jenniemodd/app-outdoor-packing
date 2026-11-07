@@ -43,13 +43,12 @@ const EditItemPage = () => {
 
       <ItemForm
         onSave={editItem}
-        initialItem={{
+                initialItem={{
           title: item.title,
           subtitle: item.subtitle,
           category: item.category,
           status: item.status,
           tags: item.tags,
-          notes: item.notes,
         }}
         submitLabel="Spara ändringar"
       />
