@@ -1,8 +1,49 @@
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Rubrikraden med den kraftiga linjen under */
+.groupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: var(--border-heading);
+}
+
+.groupTitle {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: var(--text-lg);
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+}
+
+/* 01, 02 … som i en kartlegend */
+.groupNumber {
+  font-size: var(--text-sm);
+  color: var(--color-accent-text);
+}
+
+.groupCount {
+  flex-shrink: 0; /* "1 av 2" ska aldrig tryckas ihop av en lång rubrik */
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
 .list {
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: var(--border-heading); /* den kraftiga linjen överst, som i skissen */
 }
 
 .message {
