@@ -1,0 +1,79 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.title {
+  font-size: var(--text-xl);
+}
+
+/* ---------- Filterpanelen ---------- */
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+}
+
+/* ---------- "Lägg till pryl" ---------- */
+
+.addItem {
+  border: 1px dashed var(--color-line-dashed);
+  border-radius: var(--radius);
+}
+
+/* När den är utfälld: hel ram och ljus bakgrund */
+.addItem[open] {
+  background: var(--color-surface);
+  border-style: solid;
+  border-color: var(--color-line);
+}
+
+.addItemSummary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: 0 var(--space-4);
+  font-weight: var(--weight-semibold);
+  color: var(--color-primary);
+  cursor: pointer;
+  list-style: none; /* tar bort webbläsarens egen triangel */
+}
+
+/* Safari visar sin triangel på ett annat sätt, den här raden tar bort den */
+.addItemSummary::-webkit-details-marker {
+  display: none;
+}
+
+/* Ett eget plus-tecken framför texten */
+.addItemSummary::before {
+  content: '+';
+  font-size: 1.5rem;
+  font-weight: var(--weight-regular);
+  line-height: 1;
+}
+
+/* Utfälld: plus blir minus */
+.addItem[open] .addItemSummary::before {
+  content: '−';
+}
+
+.addItemContent {
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+/* ---------- Felmeddelanden ---------- */
+
+.error {
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-danger);
+  background: var(--color-surface);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius);
+}

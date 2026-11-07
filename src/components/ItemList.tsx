@@ -1,25 +1,25 @@
 import type { Item } from '../types'
 import ItemCard from './ItemCard'
+import styles from './ItemList.module.css'
 
 type ItemListProps = {
   items: Item[]
   isLoading: boolean
   error: string
-  onStatusChange: (item: Item, status: string) => void // NYTT
+  onStatusChange: (item: Item, status: string) => void
 }
 
 const ItemList = ({ items, isLoading, error, onStatusChange }: ItemListProps) => {
-  if (isLoading && items.length === 0) return <p>Laddar packlista...</p>
-  if (error) return <p>Kunde inte hämta packlistan: {error}</p>
-  if (items.length === 0) return <p>Inga prylar matchar filtret.</p>
+  if (isLoading && items.length === 0) return <p className={styles.message}>Laddar packlista...</p>
+  if (error) return <p className={styles.message}>Kunde inte hämta packlistan: {error}</p>
+  if (items.length === 0) return <p className={styles.message}>Inga prylar matchar filtret.</p>
 
   return (
-    <ul>
+    <ul className={styles.list}>
       {items.map((item) => (
         <ItemCard
           key={item.id}
           item={item}
-          // Kortet vet bara vilken status du valde. Här lägger vi till VILKEN pryl det gäller
           onStatusChange={(status) => onStatusChange(item, status)}
         />
       ))}

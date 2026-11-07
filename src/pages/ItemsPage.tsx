@@ -1,4 +1,4 @@
-import { DURATIONS, STATUSES, ACTIVITIES } from '../config'
+import { ACTIVITIES, DURATIONS, STATUSES } from '../config'
 import type { Item, NewItem } from '../types'
 import useLocalStorage from '../hooks/useLocalStorage'
 import useItems from '../hooks/useItems'
@@ -6,6 +6,7 @@ import useItemActions from '../hooks/useItemActions'
 import FilterButtons from '../components/FilterButtons'
 import ItemForm from '../components/ItemForm'
 import ItemList from '../components/ItemList'
+import styles from './ItemsPage.module.css'
 
 const ItemsPage = () => {
   // 1. Hooks
@@ -31,28 +32,31 @@ const ItemsPage = () => {
     return true
   }
 
-  // NYTT: ersätter togglePacked. Skickar den status du valde
   const changeStatus = (item: Item, newStatus: string) => {
-    if (newStatus === item.status) return // samma som förut: inget anrop behövs
+    if (newStatus === item.status) return
     updateStatus(item.id, newStatus)
   }
 
   // 4. Själva sidan
   return (
-    <>
-      <h1>Packlistan</h1>
+    <div className={styles.page}>
+      <h1 className={styles.title}>Packlistan</h1>
 
-      <details>
-        <summary>Lägg till pryl</summary>
-        {createError && <p>Kunde inte spara: {createError}</p>}
-        <ItemForm onSave={addItem} />
+      <section className={styles.filters} aria-label="Filter">
+        <FilterButtons label="Aktivitet" options={ACTIVITIES} selected={activity} onChange={setActivity} />
+        <FilterButtons label="Turlängd" options={DURATIONS} selected={duration} onChange={setDuration} />
+        <FilterButtons label="Status" options={STATUSES} selected={status} onChange={setStatus} />
+      </section>
+
+      <details className={styles.addItem}>
+        <summary className={styles.addItemSummary}>Lägg till pryl</summary>
+        <div className={styles.addItemContent}>
+          {createError && <p className={styles.error}>Kunde inte spara: {createError}</p>}
+          <ItemForm onSave={addItem} />
+        </div>
       </details>
 
-      <FilterButtons label="Aktivitet" options={ACTIVITIES} selected={activity} onChange={setActivity} />
-      <FilterButtons label="Turlängd" options={DURATIONS} selected={duration} onChange={setDuration} />
-      <FilterButtons label="Status" options={STATUSES} selected={status} onChange={setStatus} />
-
-      {updateError && <p>Kunde inte spara: {updateError}</p>}
+      {updateError && <p className={styles.error}>Kunde inte spara: {updateError}</p>}
 
       <ItemList
         items={filteredItems}
@@ -60,7 +64,7 @@ const ItemsPage = () => {
         error={error}
         onStatusChange={changeStatus}
       />
-    </>
+    </div>
   )
 }
 

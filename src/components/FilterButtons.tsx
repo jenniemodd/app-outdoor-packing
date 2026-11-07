@@ -1,36 +1,40 @@
 import { capitalize } from '../utils/format'
+import styles from './FilterButtons.module.css'
 
 type FilterButtonsProps = {
-  label: string // rubriken, t.ex. "Status" eller "Aktivitet"
-  options: string[] // knapparna som ska visas
-  selected: string // vilken som är vald just nu ('' = Alla)
-  onChange: (value: string) => void // funktion att anropa vid klick
+  label: string
+  options: string[]
+  selected: string
+  onChange: (value: string) => void
 }
 
 const FilterButtons = ({ label, options, selected, onChange }: FilterButtonsProps) => {
   return (
-    // role="group" berättar för skärmläsare att knapparna hör ihop
-    <div role="group" aria-label={label}>
-      <p>{label}</p>
+    <div className={styles.group} role="group" aria-label={label}>
+      <p className={styles.label}>{label}</p>
 
-      <button
-        type="button"
-        aria-pressed={selected === ''}
-        onClick={() => onChange('')}
-      >
-        Alla
-      </button>
-
-      {options.map((option) => (
+      <div className={styles.options}>
         <button
-          key={option}
           type="button"
-          aria-pressed={selected === option}
-          onClick={() => onChange(option)}
+          className={styles.button}
+          aria-pressed={selected === ''}
+          onClick={() => onChange('')}
         >
-          {capitalize(option)}
+          Alla
         </button>
-      ))}
+
+        {options.map((option) => (
+          <button
+            key={option}
+            type="button"
+            className={styles.button}
+            aria-pressed={selected === option}
+            onClick={() => onChange(option)}
+          >
+            {capitalize(option)}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

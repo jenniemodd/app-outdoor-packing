@@ -1,0 +1,51 @@
+/* En rad i listan. I mobilen: text överst, statusväljaren under */
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
+  border-bottom: var(--border);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0; /* gör att långa namn kan brytas i stället för att trycka ut raden */
+}
+
+.title {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.title:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* Packade prylar tonas ner, så att det som är kvar syns mest */
+.item[data-status='Packad'] .title {
+  color: var(--color-text-muted);
+}
+
+/* Bredare skärmar: text till vänster, statusväljaren till höger */
+@media (min-width: 600px) {
+  .item {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+  }
+
+  .status {
+    flex: 0 0 300px; /* växer inte, krymper inte, alltid 300px bred */
+  }
+}

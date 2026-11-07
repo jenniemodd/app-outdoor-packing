@@ -1,0 +1,106 @@
+/* Webbläsaren ger fieldset egen ram och padding. Vi nollar allt */
+.picker {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+/*
+ * "Visuellt dold": syns inte, men skärmläsare läser den.
+ * Legenden "Status för Pannlampa" behövs för tillgänglighet, inte för ögat
+ */
+.legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* De tre alternativen sida vid sida, lika breda */
+.options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  background: var(--color-surface);
+  border: var(--border-strong);
+  border-radius: var(--radius);
+  overflow: hidden; /* rundar av hörnen även på den färgade bakgrunden */
+}
+
+/* Varje alternativ är en <label>, så hela ytan går att trycka på */
+.option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-height: var(--tap-target);
+  padding: 0 var(--space-2);
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tag);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+/* Linje mellan alternativen: varje option som kommer EFTER en annan */
+.option + .option {
+  border-left: var(--border-strong);
+}
+
+.option:hover {
+  color: var(--color-text);
+  background: var(--color-surface-hover);
+}
+
+/*
+ * Själva radioknappen göms, men finns kvar.
+ * Den går fortfarande att nå med tangentbordet och skärmläsare.
+ * Vi gömmer den inte med display: none, för då försvinner den helt
+ */
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+/* Fokusring på hela alternativet när radioknappen har fokus */
+.option:has(.input:focus-visible) {
+  z-index: 1;
+  outline: var(--focus-ring);
+  outline-offset: -3px; /* innanför kanten, annars klipps den av overflow: hidden */
+}
+
+/* ---------- Valt alternativ, en färg per status ---------- */
+
+.option[data-status='Att skaffa']:has(.input:checked) {
+  color: var(--color-accent-text);
+  background: var(--color-accent-soft);
+}
+
+.option[data-status='Har']:has(.input:checked) {
+  color: var(--color-text);
+  background: var(--color-track);
+}
+
+.option[data-status='Packad']:has(.input:checked) {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+}
+
+/* En bock framför "Packad" när den är vald */
+.option[data-status='Packad']:has(.input:checked)::before {
+  content: '✓';
+}

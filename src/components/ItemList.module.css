@@ -1,0 +1,11 @@
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: var(--border-heading); /* den kraftiga linjen överst, som i skissen */
+}
+
+.message {
+  padding: var(--space-5) 0;
+  color: var(--color-text-muted);
+}

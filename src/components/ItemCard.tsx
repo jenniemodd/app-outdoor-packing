@@ -1,24 +1,32 @@
 import { Link } from 'react-router'
 import type { Item } from '../types'
 import StatusPicker from './StatusPicker'
+import styles from './ItemCard.module.css'
 
 type ItemCardProps = {
   item: Item
-  onStatusChange: (status: string) => void // NYTT: ersätter onTogglePacked
+  onStatusChange: (status: string) => void
 }
 
 const ItemCard = ({ item, onStatusChange }: ItemCardProps) => {
   return (
-    <li>
-      <Link to={`/items/${item.id}`}>{item.title}</Link>
-      {item.subtitle && <p>{item.subtitle}</p>}
+    // data-status gör att CSS:en kan styla raden efter prylens status
+    <li className={styles.item} data-status={item.status}>
+      <div className={styles.text}>
+        <Link to={`/items/${item.id}`} className={styles.title}>
+          {item.title}
+        </Link>
+        {item.subtitle && <p className={styles.subtitle}>{item.subtitle}</p>}
+      </div>
 
-      <StatusPicker
-        itemId={item.id}
-        itemTitle={item.title}
-        status={item.status}
-        onChange={onStatusChange}
-      />
+      <div className={styles.status}>
+        <StatusPicker
+          itemId={item.id}
+          itemTitle={item.title}
+          status={item.status}
+          onChange={onStatusChange}
+        />
+      </div>
     </li>
   )
 }
