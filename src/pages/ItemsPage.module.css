@@ -64,6 +64,36 @@
   transition: width 0.3s ease;
 }
 
+/* "Packa upp allt": en lugn knapp, så att den inte konkurrerar med listan */
+.unpackButton {
+  align-self: flex-start; /* bara så bred som texten */
+  min-height: var(--tap-target);
+  padding: 0 var(--space-4);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  background: transparent;
+  border: var(--border-strong);
+  border-radius: var(--radius);
+  transition: background-color 0.15s;
+}
+
+/* Pil i en cirkel framför texten: "börja om" */
+.unpackButton::before {
+  content: '↺';
+  margin-right: var(--space-2);
+}
+
+.unpackButton:hover {
+  background: var(--color-surface-hover);
+}
+
+.unpackButton:disabled {
+  cursor: not-allowed;
+  color: var(--color-disabled-text);
+  background: var(--color-disabled-bg);
+  border-color: var(--color-disabled-bg);
+}
+
 /* ---------- Filterpanelen: en "kontrollpanel" med ljus bakgrund ---------- */
 
 .filterPanel {

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { ACTIVITIES, CATEGORIES, DURATIONS, STATUSES } from '../config'
 import type { Item, NewItem } from '../types'
 import useLocalStorage from '../hooks/useLocalStorage'
@@ -19,6 +20,9 @@ const ItemsPage = () => {
   const { items, isLoading, error, updateError, updateStatus, reload } = useItems(status)
   const { items: allItems, reload: reloadAll } = useItems('')
   const { createItem, error: createError } = useItemActions()
+  // NYTT: en egen instans för att packa upp, så att felet inte blandas ihop med formulärets
+  const { updateItem, error: unpackError } = useItemActions()
+  const [isUnpacking, setIsUnpacking] = useState(false) // NYTT
 
   // 2. Filtrera
   const matchesFilters = (item: Item) =>
@@ -29,19 +33,18 @@ const ItemsPage = () => {
   const filteredItems = items.filter(matchesFilters)
   const tripItems = allItems.filter(matchesFilters)
 
-  // Knapparna för kategori: grundlistan + egna kategorier som finns på prylarna
   const categories = [
     ...new Set([...CATEGORIES, ...allItems.map((item) => item.category).filter((c) => c !== '')]),
   ]
 
-  // Det som visas i den hopfällda filterraden, t.ex. "Vandring · Flerdagstur"
   const activeFilters = [activity, duration, category, status]
     .filter((value) => value !== '')
     .map(capitalize)
   const hasFilters = activeFilters.length > 0
 
   // Förloppet
-  const packedCount = tripItems.filter((item) => item.status === 'Packad').length
+  const packedItems = tripItems.filter((item) => item.status === 'Packad') // NYTT: själva prylarna, inte bara antalet
+  const packedCount = packedItems.length
   const toBuyCount = tripItems.filter((item) => item.status === 'Att skaffa').length
   const percent = tripItems.length > 0 ? (packedCount / tripItems.length) * 100 : 0
 
@@ -65,7 +68,6 @@ const ItemsPage = () => {
     reloadAll()
   }
 
-  // Nollställer alla filter på en gång
   const clearFilters = () => {
     setActivity('')
     setDuration('')
@@ -73,10 +75,23 @@ const ItemsPage = () => {
     setStatus('')
   }
 
+  // NYTT: gör alla packade prylar (som matchar filtren) till "Har" igen
+  const unpackAll = async () => {
+    const isSure = window.confirm(`Packa upp ${packedCount} prylar? De får statusen Har igen.`)
+    if (!isSure) return
+
+    setIsUnpacking(true)
+    // Ett PATCH-anrop per pryl, alla skickas samtidigt. await väntar tills alla är klara
+    await Promise.all(packedItems.map((item) => updateItem(item.id, { status: 'Har' })))
+    setIsUnpacking(false)
+
+    reload()
+    reloadAll()
+  }
+
   // 4. Själva sidan
   return (
     <div className={styles.page}>
-      {/* Överst: vad du packar för och hur långt du kommit */}
       <section className={styles.intro}>
         <div className={styles.heading}>
           <p className={styles.eyebrow}>Din packning</p>
@@ -96,14 +111,27 @@ const ItemsPage = () => {
             </div>
           </div>
         )}
+
+        {/* NYTT: visas bara när något är packat */}
+        {packedCount > 0 && (
+          <button
+            type="button"
+            className={styles.unpackButton}
+            onClick={unpackAll}
+            disabled={isUnpacking}
+          >
+            {isUnpacking ? 'Packar upp...' : 'Packa upp allt'}
+          </button>
+        )}
+
+        {unpackError && <p className={styles.error}>Kunde inte packa upp allt: {unpackError}</p>}
       </section>
 
-      {/* Filterpanelen: hopfälld, visar valda filter i rubriken */}
       <details className={styles.filterPanel}>
         <summary className={styles.filterSummary}>
-          <span className={styles.filterLabel}>Filtrering</span>
+          <span className={styles.filterLabel}>Filter</span>
           <span className={styles.filterValue}>
-            {hasFilters ? activeFilters.join(' · ') : 'Visa allt'}
+            {hasFilters ? activeFilters.join(' · ') : 'Visar allt'}
           </span>
         </summary>
 
@@ -121,7 +149,6 @@ const ItemsPage = () => {
         </div>
       </details>
 
-      {/* Packlistan: egen rubrik, så den syns som en egen del */}
       <section className={styles.listSection} aria-labelledby="list-heading">
         <div className={styles.listHeader}>
           <h2 id="list-heading" className={styles.listTitle}>Packlista</h2>
