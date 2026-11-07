@@ -1,30 +1,33 @@
 import { STATUSES } from '../config'
+import styles from './StatusPicker.module.css'
 
 type StatusPickerProps = {
-  itemId: string // behövs för att varje rad ska få en egen grupp
-  itemTitle: string // för skärmläsare: "Status för Pannlampa"
-  status: string // vald status just nu
+  itemId: string
+  itemTitle: string
+  status: string
   onChange: (status: string) => void
 }
 
 const StatusPicker = ({ itemId, itemTitle, status, onChange }: StatusPickerProps) => {
   return (
-    // fieldset + legend talar om att knapparna hör ihop och vad de gäller
-    <fieldset>
-      <legend>Status för {itemTitle}</legend>
+    <fieldset className={styles.picker}>
+      <legend className={styles.legend}>Status för {itemTitle}</legend>
 
-      {STATUSES.map((s) => (
-        <label key={s}>
-          <input
-            type="radio"
-            name={`status-${itemId}`} // samma name = samma grupp, bara en kan vara vald
-            value={s}
-            checked={status === s}
-            onChange={() => onChange(s)}
-          />
-          {s}
-        </label>
-      ))}
+      <div className={styles.options}>
+        {STATUSES.map((s) => (
+          <label key={s} className={styles.option} data-status={s}>
+            <input
+              type="radio"
+              className={styles.input}
+              name={`status-${itemId}`}
+              value={s}
+              checked={status === s}
+              onChange={() => onChange(s)}
+            />
+            {s}
+          </label>
+        ))}
+      </div>
     </fieldset>
   )
 }
