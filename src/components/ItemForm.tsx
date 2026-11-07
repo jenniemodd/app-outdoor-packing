@@ -1,10 +1,12 @@
 import { useState, type SubmitEvent } from 'react'
 import { ACTIVITIES, CATEGORIES, DURATIONS, STATUSES } from '../config'
 import type { NewItem } from '../types'
+import { capitalize } from '../utils/format'
+import styles from './ItemForm.module.css'
 
 type ItemFormProps = {
-  onSave: (item: NewItem) => Promise<boolean> // sidan bestämmer vad som händer
-  initialItem?: NewItem // ? = valfri. Används senare för att förifylla vid ändra
+  onSave: (item: NewItem) => Promise<boolean>
+  initialItem?: NewItem
   submitLabel?: string
 }
 
@@ -18,7 +20,6 @@ const emptyItem: NewItem = {
 }
 
 const ItemForm = ({ onSave, initialItem = emptyItem, submitLabel = 'Lägg till pryl' }: ItemFormProps) => {
-  // Ett state per fält: formuläret är "kontrollerat", React vet alltid vad som står
   const [title, setTitle] = useState(initialItem.title)
   const [subtitle, setSubtitle] = useState(initialItem.subtitle)
   const [category, setCategory] = useState(initialItem.category)
@@ -26,20 +27,18 @@ const ItemForm = ({ onSave, initialItem = emptyItem, submitLabel = 'Lägg till p
   const [tags, setTags] = useState<string[]>(initialItem.tags)
   const [notes, setNotes] = useState(initialItem.notes)
 
-  // Kryssar du i en tagg läggs den till, kryssar du ur tas den bort
   const toggleTag = (tag: string) => {
     if (tags.includes(tag)) {
-      setTags(tags.filter((t) => t !== tag)) // behåll alla UTOM den här
+      setTags(tags.filter((t) => t !== tag))
     } else {
-      setTags([...tags, tag]) // en ny lista: de gamla + den nya
+      setTags([...tags, tag])
     }
   }
 
-    const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     const success = await onSave({ title, subtitle, category, status, tags, notes })
 
-    // Gick det bra: töm fälten så att nästa pryl kan läggas till direkt
     if (success) {
       setTitle(initialItem.title)
       setSubtitle(initialItem.subtitle)
@@ -51,64 +50,103 @@ const ItemForm = ({ onSave, initialItem = emptyItem, submitLabel = 'Lägg till p
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Namn
-        <input value={title} onChange={(e) => setTitle(e.target.value)} required />
-      </label>
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <div className={styles.row}>
+        <label className={styles.field}>
+          <span className={styles.label}>Namn</span>
+          <input
+            className={styles.input}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </label>
 
-      <label>
-        Märke, modell, vikt
-        <input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
-      </label>
+        <label className={styles.field}>
+          <span className={styles.label}>Märke, modell, vikt</span>
+          <input
+            className={styles.input}
+            value={subtitle}
+            onChange={(e) => setSubtitle(e.target.value)}
+          />
+        </label>
+      </div>
 
-      <label>
-        Kategori
-        {/* list kopplar fältet till förslagen i <datalist>. Du kan välja ett eller skriva ett nytt */}
-        <input list="categories" value={category} onChange={(e) => setCategory(e.target.value)} />
-        <datalist id="categories">
-          {CATEGORIES.map((c) => (
-            <option key={c} value={c} />
+      <div className={styles.row}>
+        <label className={styles.field}>
+          <span className={styles.label}>Kategori</span>
+          <input
+            className={styles.input}
+            list="categories"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          />
+          <datalist id="categories">
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
+        </label>
+
+        <label className={styles.field}>
+          <span className={styles.label}>Status</span>
+          <select
+            className={styles.input}
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            {STATUSES.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <fieldset className={styles.fieldset}>
+        <legend className={styles.legend}>Aktiviteter</legend>
+        <div className={styles.chips}>
+          {ACTIVITIES.map((tag) => (
+            <label key={tag} className={styles.chip}>
+              <input
+                type="checkbox"
+                className={styles.chipInput}
+                checked={tags.includes(tag)}
+                onChange={() => toggleTag(tag)}
+              />
+              {capitalize(tag)}
+            </label>
           ))}
-        </datalist>
-      </label>
-
-      <label>
-        Status
-        <select value={status} onChange={(e) => setStatus(e.target.value)}>
-          {STATUSES.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
-      </label>
-
-      {/* fieldset och legend grupperar kryssrutorna med en rubrik */}
-      <fieldset>
-        <legend>Aktiviteter</legend>
-        {ACTIVITIES.map((tag) => (
-          <label key={tag}>
-            <input type="checkbox" checked={tags.includes(tag)} onChange={() => toggleTag(tag)} />
-            {tag}
-          </label>
-        ))}
+        </div>
       </fieldset>
 
-      <fieldset>
-        <legend>Turlängd</legend>
-        {DURATIONS.map((tag) => (
-          <label key={tag}>
-            <input type="checkbox" checked={tags.includes(tag)} onChange={() => toggleTag(tag)} />
-            {tag}
-          </label>
-        ))}
+      <fieldset className={styles.fieldset}>
+        <legend className={styles.legend}>Turlängd</legend>
+        <div className={styles.chips}>
+          {DURATIONS.map((tag) => (
+            <label key={tag} className={styles.chip}>
+              <input
+                type="checkbox"
+                className={styles.chipInput}
+                checked={tags.includes(tag)}
+                onChange={() => toggleTag(tag)}
+              />
+              {capitalize(tag)}
+            </label>
+          ))}
+        </div>
       </fieldset>
 
-      <label>
-        Anteckningar
-        <textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
+      <label className={styles.field}>
+        <span className={styles.label}>Anteckningar</span>
+        {/* Två klasser på samma element: .input för grundstilen, .textarea för det extra */}
+        <textarea
+          className={`${styles.input} ${styles.textarea}`}
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+        />
       </label>
 
-      <button type="submit">{submitLabel}</button>
+      <button type="submit" className={styles.submit}>{submitLabel}</button>
     </form>
   )
 }
