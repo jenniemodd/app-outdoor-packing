@@ -8,7 +8,7 @@ const useItemActions = () => {
   const [error, setError] = useState('')
 
   // Den gemensamma logiken. Skickar ett anrop och returnerar svaret, eller null om det gick fel
-  const sendRequest = async (url: string, method: string, body?: NewItem) => {
+    const sendRequest = async (url: string, method: string, body?: Partial<NewItem>) => {
     setIsSaving(true)
     setError('')
     try {
@@ -37,7 +37,7 @@ const useItemActions = () => {
   const createItem = (newItem: NewItem): Promise<Item | null> =>
     sendRequest(API_URL, 'POST', newItem)
 
-  const updateItem = (id: string, changes: NewItem): Promise<Item | null> =>
+    const updateItem = (id: string, changes: Partial<NewItem>): Promise<Item | null> =>
     sendRequest(`${API_URL}/${id}`, 'PATCH', changes)
 
   const deleteItem = async (id: string): Promise<boolean> => {
