@@ -3,13 +3,13 @@ import type { NewItem } from '../types'
 import useItem from '../hooks/useItem'
 import useItemActions from '../hooks/useItemActions'
 import ItemForm from '../components/ItemForm'
+import styles from './FormPage.module.css'
 
 const EditItemPage = () => {
   // 1. Hooks
   const { id } = useParams()
   const navigate = useNavigate()
   const { item, isLoading, error } = useItem(id)
-  // Båda hooks lämnar tillbaka något som heter "error", så vi döper om det ena
   const { updateItem, error: saveError } = useItemActions()
 
   // 2. Funktioner
@@ -24,22 +24,22 @@ const EditItemPage = () => {
   }
 
   // 3. Tidiga return
-  if (isLoading) return <p>Laddar pryl...</p>
+  if (isLoading) return <p className={styles.message}>Laddar pryl...</p>
 
   if (error || !item) {
     return (
-      <>
-        <h1>{error || 'Prylen hittades inte'}</h1>
+      <div className={styles.page}>
+        <h1 className={styles.title}>{error || 'Prylen hittades inte'}</h1>
         <Link to="/">Tillbaka till packlistan</Link>
-      </>
+      </div>
     )
   }
 
   // 4. Själva sidan
   return (
-    <>
-      <h1>Ändra {item.title}</h1>
-      {saveError && <p>Kunde inte spara: {saveError}</p>}
+    <div className={styles.page}>
+      <h1 className={styles.title}>Ändra {item.title}</h1>
+      {saveError && <p className={styles.error}>Kunde inte spara: {saveError}</p>}
 
       <ItemForm
         onSave={editItem}
@@ -53,7 +53,7 @@ const EditItemPage = () => {
         }}
         submitLabel="Spara ändringar"
       />
-    </>
+    </div>
   )
 }
 
