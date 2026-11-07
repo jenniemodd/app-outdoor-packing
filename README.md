@@ -13,7 +13,7 @@ Uppgiften var att bygga en React-app mot ett externt API. Grunden var Questlog, 
 
 Jag tycker om att bygga saker som är funktionella och som jag själv vill använda. Så jag utgick från något jag saknar. Varje gång jag ska ut på tur, oavsett om det är en dagstur eller en flerdagstur, glömmer jag något. Mina packlistor har legat i Anteckningar på iPhonen, men där är det krångligt att bocka av, och svårt att snabbt se vad jag behöver köpa, vad jag har hemma och vad som redan är packat.
 
-Därför byggde jag Packlistan: en app där varje pryl har en status, där listan går att filtrera på aktivitet, turlängd och kategori, och där jag ser direkt hur mycket som är kvar att packa.
+Därför byggde jag Packlistan: en app där varje pryl har en status, där listan går att filtrera på aktivitet, turlängd och kategori, och där jag ser direkt hur mycket som är kvar att packa. Jag siktar på VG på den här uppgiften.
 
 ---
 
@@ -105,7 +105,7 @@ src/
 | `/items/:id/edit` | Ändra pryl |
 | `*` | 404 |
 
-## Custom hooks
+## Custom hooks (VG)
 
 All fetch-logik ligger i egna hooks i mappen `hooks`. Ingen sida eller komponent anropar `fetch` själv.
 
@@ -127,7 +127,7 @@ All fetch-logik ligger i egna hooks i mappen `hooks`. Ingen sida eller komponent
 
 Kursens förslag var att samla hooksen i en fil. Jag har en fil per hook, eftersom det gör varje fil kort och lätt att hitta.
 
-## Sparat filter
+## Sparat filter (VG)
 
 Alla fyra filtren sparas med `useLocalStorage` under nycklarna `packlista-status`, `packlista-activity`, `packlista-duration` och `packlista-category`. Hooken läser det sparade värdet när sidan laddas och sparar varje ändring med `useEffect`. Värdet görs om till text med `JSON.stringify`, eftersom localStorage bara kan spara text. Läsning och skrivning ligger i `try/catch`, så att appen fungerar även när localStorage är avstängt, till exempel i privat läge.
 
