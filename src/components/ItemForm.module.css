@@ -53,11 +53,6 @@
   border-color: var(--color-primary);
 }
 
-.textarea {
-  min-height: 6rem;
-  line-height: 1.5;
-  resize: vertical; /* får dras högre, men inte bredare */
-}
 
 /* ---------- Grupper med kryssrutor ---------- */
 

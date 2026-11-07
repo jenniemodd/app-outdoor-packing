@@ -22,7 +22,6 @@
   gap: 2px;
 }
 
-/* "DIN PACKNING" ovanför rubriken */
 .eyebrow {
   font-family: var(--font-heading);
   font-size: var(--text-xs);
@@ -52,7 +51,6 @@
   color: var(--color-accent-text);
 }
 
-/* Den grå "rännan" */
 .progressTrack {
   height: 8px;
   overflow: hidden;
@@ -60,23 +58,118 @@
   border-radius: 4px;
 }
 
-/* Den gröna stapeln. Bredden sätts från React */
 .progressBar {
   height: 100%;
   background: var(--color-primary);
-  transition: width 0.3s ease; /* stapeln växer mjukt när du packar */
+  transition: width 0.3s ease;
 }
 
-/* ---------- Filterpanelen ---------- */
+/* ---------- Filterpanelen: en "kontrollpanel" med ljus bakgrund ---------- */
 
-.filters {
+.filterPanel {
+  background: var(--color-surface);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+}
+
+/* Den hopfällda raden: FILTER  Vandring · Flerdagstur  ⌄ */
+.filterSummary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 56px;
+  padding: 0 var(--space-4);
+  cursor: pointer;
+  list-style: none;
+}
+
+.filterSummary::-webkit-details-marker {
+  display: none;
+}
+
+/* En pil ritad med två ramkanter, vriden 45 grader */
+.filterSummary::after {
+  content: '';
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-left: auto;
+  border-right: 2px solid var(--color-text-muted);
+  border-bottom: 2px solid var(--color-text-muted);
+  transform: rotate(45deg);
+  transition: transform 0.15s;
+}
+
+/* Utfälld: pilen pekar uppåt */
+.filterPanel[open] .filterSummary::after {
+  transform: rotate(-135deg);
+}
+
+.filterLabel {
+  flex-shrink: 0;
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+/* Valda filter. Blir de för många på en smal skärm avslutas raden med … */
+.filterValue {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-muted);
+}
+
+.filterContent {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
   padding: var(--space-4);
-  background: var(--color-surface);
-  border: var(--border);
-  border-radius: var(--radius-lg);
+  border-top: var(--border);
+}
+
+.clearButton {
+  align-self: flex-start;
+  min-height: var(--tap-target);
+  padding: 0;
+  font-weight: var(--weight-semibold);
+  color: var(--color-primary);
+  background: transparent;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.clearButton:hover {
+  color: var(--color-primary-dark);
+}
+
+/* ---------- Packlistan: öppen på pappret ---------- */
+
+.listSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.listHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.listTitle {
+  font-size: var(--text-section);
+}
+
+.listCount {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
 }
 
 /* ---------- "Lägg till pryl" ---------- */
@@ -86,7 +179,6 @@
   border-radius: var(--radius);
 }
 
-/* När den är utfälld: hel ram och ljus bakgrund */
 .addItem[open] {
   background: var(--color-surface);
   border-style: solid;
@@ -102,15 +194,13 @@
   font-weight: var(--weight-semibold);
   color: var(--color-primary);
   cursor: pointer;
-  list-style: none; /* tar bort webbläsarens egen triangel */
+  list-style: none;
 }
 
-/* Safari visar sin triangel på ett annat sätt, den här raden tar bort den */
 .addItemSummary::-webkit-details-marker {
   display: none;
 }
 
-/* Ett eget plus-tecken framför texten */
 .addItemSummary::before {
   content: '+';
   font-size: 1.5rem;
@@ -118,7 +208,6 @@
   line-height: 1;
 }
 
-/* Utfälld: plus blir minus */
 .addItem[open] .addItemSummary::before {
   content: '−';
 }

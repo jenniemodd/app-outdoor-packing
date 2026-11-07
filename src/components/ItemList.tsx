@@ -26,11 +26,11 @@ const ItemList = ({ items, isLoading, error, onStatusChange }: ItemListProps) =>
         return (
           <section key={category} className={styles.group}>
             <div className={styles.groupHeader}>
-              <h2 className={styles.groupTitle}>
+              <h3 className={styles.groupTitle}>
                 {/* index börjar på 0, så +1. padStart gör 1 till "01" */}
                 <span className={styles.groupNumber}>{String(index + 1).padStart(2, '0')}</span>
                 {category}
-              </h2>
+              </h3>
               <span className={styles.groupCount}>
                 {packedCount} av {groupItems.length}
               </span>

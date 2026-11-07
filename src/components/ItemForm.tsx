@@ -63,7 +63,7 @@ const ItemForm = ({ onSave, initialItem = emptyItem, submitLabel = 'Lägg till p
         </label>
 
         <label className={styles.field}>
-          <span className={styles.label}>Märke, modell, vikt</span>
+          <span className={styles.label}>Modell (Valfritt)</span>
           <input
             className={styles.input}
             value={subtitle}
