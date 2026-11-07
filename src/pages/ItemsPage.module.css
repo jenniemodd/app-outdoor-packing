@@ -8,6 +8,65 @@
   font-size: var(--text-xl);
 }
 
+/* ---------- Rubrik och förlopp ---------- */
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* "DIN PACKNING" ovanför rubriken */
+.eyebrow {
+  font-family: var(--font-heading);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.progressText {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.progressText strong {
+  font-weight: var(--weight-semibold);
+}
+
+.toBuy {
+  color: var(--color-accent-text);
+}
+
+/* Den grå "rännan" */
+.progressTrack {
+  height: 8px;
+  overflow: hidden;
+  background: var(--color-track);
+  border-radius: 4px;
+}
+
+/* Den gröna stapeln. Bredden sätts från React */
+.progressBar {
+  height: 100%;
+  background: var(--color-primary);
+  transition: width 0.3s ease; /* stapeln växer mjukt när du packar */
+}
+
 /* ---------- Filterpanelen ---------- */
 
 .filters {

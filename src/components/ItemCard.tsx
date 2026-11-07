@@ -10,7 +10,7 @@ type ItemCardProps = {
 
 const ItemCard = ({ item, onStatusChange }: ItemCardProps) => {
   return (
-    // data-status gör att CSS:en kan styla raden efter prylens status
+
     <li className={styles.item} data-status={item.status}>
       <div className={styles.text}>
         <Link to={`/items/${item.id}`} className={styles.title}>
