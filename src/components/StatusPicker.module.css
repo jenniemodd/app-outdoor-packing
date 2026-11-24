@@ -1,4 +1,4 @@
-/* Webbläsaren ger fieldset egen ram och padding. Vi nollar allt */
+/* Webbläsaren ger fieldset egen ram och padding. Denna nollar allt */
 .picker {
   margin: 0;
   padding: 0;
@@ -66,7 +66,7 @@
 /*
  * Själva radioknappen göms, men finns kvar.
  * Den går fortfarande att nå med tangentbordet och skärmläsare.
- * Vi gömmer den inte med display: none, för då försvinner den helt
+ * Gömms inte med display: none, för då försvinner den helt
  */
 .input {
   position: absolute;
